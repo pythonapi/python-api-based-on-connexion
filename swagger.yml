@@ -1,0 +1,294 @@
+swagger: "2.0"
+info:
+  description: My API
+  version: "1.0.0"
+  title: My REST API
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+
+basePath: "/api/v1.0"
+
+# Paths supported by the server application
+paths:
+
+
+
+# ================= User ====================
+  /user/{id}:
+    get:
+      operationId: "controller.user.get"
+      tags:
+        - "User"
+      summary: "This method returns a user by id"
+      description: "Get a user by ID. Auth required."
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "Id of the user"
+          type: "integer"
+          required: True
+      responses:
+        200:
+          description: "Successful read the user"
+          schema:
+            properties:
+              id:
+                type: "integer"
+              first_name:
+                type: "string"
+              last_name:
+                type: "string"
+              profile_image_url:
+                type: "string"
+              headline:
+                type: "string"
+              country:
+                type: "string"
+              city:
+                type: "string"
+              lat:
+                type: "number"
+              lon:
+                type: "number"
+              interests:
+                type: "string"
+              about:
+                type: "string"
+              languages:
+                type: "string"
+              ways_to_meet:
+                type: "string"
+    put:
+      operationId: "controller.user.update"
+      tags:
+        - "User"
+      summary: "Update a user"
+      description: "Update a user. Auth required."
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "Id of the user"
+          type: "integer"
+          required: True
+        - name: "user"
+          in: "body"
+          schema:
+            type: "object"
+            properties:
+              email:
+                type: "string"
+              password:
+                type: "string"
+              password_confirm:
+                type: "string"
+              first_name:
+                type: "string"
+              last_name:
+                type: "string"
+              headline:
+                type: "string"
+              country_id:
+                type: "integer"
+              city_id:
+                type: "integer"
+              lat:
+                type: "number"
+              lon:
+                type: "number"
+              interests:
+                type: "string"
+              about:
+                type: "string"
+              languages:
+                type: "string"
+              ways_to_meet:
+                type: "string"
+      responses:
+        200:
+          description: "Successfully updated user"
+  /user:
+    post:
+      operationId: "controller.user.create"
+      tags:
+        - "User"
+      summary: "Create a user."
+      description: "Create a user."
+      parameters:
+        - name: "user"
+          in: "body"
+          description: User to create
+          required: True
+          schema:
+            type: "object"
+            properties:
+              type:
+                type: "string"
+                description: "Type of the signup - STANDARD"
+              email:
+                type: "string"
+                description: "Email of the user"
+              password:
+                type: "string"
+                description: "Last name of person to create"
+              facebook_id:
+                type: "string"
+                description: "Facebook id"
+      responses:
+        201:
+          description: Successfully created user
+  /user/{id}/profile/image:
+    put:
+      operationId: "controller.user.update_profile_image"
+      tags:
+        - "User"
+      summary: "Update a user profile image"
+      description: "Update a user profile image. Auth required."
+      consumes:
+        - "multipart/form-data"
+      parameters:
+        - name: "id"
+          in: "path"
+          type: "integer"
+          required: True
+        - name: "file"
+          in: "formData"
+          description: "The file which we want to upload"
+          type: "file"
+          required: True
+      responses:
+        200:
+          description: "Successfully updated user profile image"
+    delete:
+      operationId: "controller.user.delete_profile_image"
+      tags:
+        - "User"
+      summary: "Delete a user profile image"
+      description: "Delete a user profile image. Auth required."
+      parameters:
+        - name: "id"
+          in: "path"
+          type: "integer"
+          required: True
+      responses:
+        200:
+          description: "Successfully deleted user profile image"
+  /user/{id}/activate:
+    get:
+      operationId: "controller.user.get_activate"
+      tags:
+        - "User"
+      summary: "This method sends an email with the activation key of the user"
+      description: "This method sends an email with the activation key of the user"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "Id of the user"
+          type: "integer"
+          required: True
+      responses:
+        200:
+          description: "Successfully sent email with the activation key of the user"
+  /user/{id}/activate/{activation_key}:
+    put:
+      operationId: "controller.user.activate"
+      tags:
+        - "User"
+      summary: "Activate a user"
+      description: "Activate a user"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "Id of the user"
+          type: "integer"
+          required: True
+        - name: "activation_key"
+          in: "path"
+          description: "Activation key of the user"
+          type: "string"
+          required: True
+      responses:
+        200:
+          description: "Successfully activated user"
+  /user/{id}/password/reset:
+    post:
+      operationId: "controller.user.request_reset_password"
+      tags:
+        - "User"
+      summary: "Request password reset"
+      description: "Request password reset by sending an email with the reset password key and link"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "Id of the user"
+          type: "integer"
+          required: True
+      responses:
+        201:
+          description: "Successfully generated password reset key"
+  /user/{id}/password/reset/{password_reset_key}:
+    put:
+      operationId: "controller.user.reset_password"
+      tags:
+        - "User"
+      summary: "Reset password"
+      description: "Reset password"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "Id of the user"
+          type: "integer"
+          required: True
+        - name: "password_reset_key"
+          in: "path"
+          description: "Rreset password key"
+          type: "string"
+          required: True
+      responses:
+        200:
+          description: "Successfully resetted password"
+
+
+
+# ================= oAuth ====================
+  /oauth/token:
+    post:
+      operationId: "controller.oauth.post_token"
+      tags:
+        - "oAuth"
+      summary: "Log in the user and prolong user session."
+      description: "Log in the user and prolong user session."
+      responses:
+        201:
+          description: "Successfully logged in user or prolonged user session."
+  /oauth/session/status:
+    get:
+      operationId: "controller.oauth.get_session_status"
+      tags:
+        - "oAuth"
+      summary: "Checks the status of a user session."
+      description: "Checks the status of a user session. Auth required."
+      responses:
+        200:
+          description: "Successfully checked session status."
+  /oauth/session:
+    delete:
+      operationId: "controller.oauth.delete_session"
+      tags:
+        - "oAuth"
+      summary: "Log out the user"
+      description: "Log out the user. Auth required."
+      responses:
+        200:
+          description: "Successfully logged out user"
+  /oauth/sessions:
+    delete:
+      operationId: "controller.oauth.delete_all_other_sessions"
+      tags:
+        - "oAuth"
+      summary: "Delete all user sessions except the one which is passed"
+      description: "Delete all user sessions except the one which is passed. Auth required."
+      responses:
+        200:
+          description: "Successfully deleted user sessions"
